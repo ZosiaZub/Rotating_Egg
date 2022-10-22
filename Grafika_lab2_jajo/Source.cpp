@@ -72,9 +72,12 @@ void RenderScene(void)
     Axes();
     // Narysowanie osi przy pomocy funkcji zdefiniowanej wyżej
 
+    glRotated(60.0, 1.0, 1.0, 1.0);  // Obrót o 60 stopni
+
     glColor3f(1.0f, 1.0f, 1.0f); // Ustawienie koloru rysowania na biały
 
     glutWireTeapot(3.0); // Narysowanie obrazu czajnika do herbaty
+
 
     glFlush();
     // Przekazanie poleceń rysujących do wykonania
