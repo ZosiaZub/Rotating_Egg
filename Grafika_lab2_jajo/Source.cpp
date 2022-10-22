@@ -71,9 +71,13 @@ void RenderScene(void)
     // Czyszczenie macierzy bieżącej
     Axes();
     // Narysowanie osi przy pomocy funkcji zdefiniowanej wyżej
+
+    glColor3f(1.0f, 1.0f, 1.0f); // Ustawienie koloru rysowania na biały
+
+    glutWireTeapot(3.0); // Narysowanie obrazu czajnika do herbaty
+
     glFlush();
     // Przekazanie poleceń rysujących do wykonania
-
 
     glutSwapBuffers();
     //
@@ -137,10 +141,9 @@ void ChangeSize(GLsizei horizontal, GLsizei vertical)
     // Czyszcenie macierzy bieżącej
 }
 
-/*************************************************************************************/
+
 
 // Główny punkt wejścia programu. Program działa w trybie konsoli
-
 
 
 void main(void)
@@ -168,5 +171,3 @@ void main(void)
     glutMainLoop();
     // Funkcja uruchamia szkielet biblioteki GLUT
 }
-
-/*************************************************************************************/
