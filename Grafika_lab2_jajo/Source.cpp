@@ -23,6 +23,7 @@ void Axes(void)
 	point3  z_min = { 0.0, 0.0, -5.0 };
 	point3  z_max = { 0.0, 0.0,  5.0 };
 	//  początek i koniec obrazu osi y
+
 	glColor3f(1.0f, 0.0f, 0.0f);  // kolor rysowania osi - czerwony
 	glBegin(GL_LINES); // rysowanie osi x
 	glVertex3fv(x_min);
@@ -94,10 +95,41 @@ void DrawTriangles(float*** t, GLint n)
 }
 
 
-//void DrawLines()
-//{
-//
-//}
+void DrawLines(float*** t, GLint n)
+{
+	glColor3f(0.0f, 1.0f, 0.0f);	// kolor ustawiony na zielony
+
+	for (int w = 1; w < n; w++)
+	{
+		for (int k = 0; k < n - 1; k++)
+		{
+			//linia pionowa w gore
+			glBegin(GL_LINES);
+						
+				glVertex3fv(t[w][k]);
+				glVertex3fv(t[w - 1][k]);
+			
+			glEnd();
+
+			//linia pozioma w prawo
+			glBegin(GL_LINES);
+
+				glVertex3fv(t[w][k]);
+				glVertex3fv(t[w][k+1]);
+
+			glEnd();
+
+			//linia na ukos do prawego gornego wierzcholka
+			glBegin(GL_LINES);
+
+				glVertex3fv(t[w][k]);
+				glVertex3fv(t[w - 1][k+1]);
+
+			glEnd();
+
+		}
+	}
+}
 
 
 void Egg()
@@ -119,7 +151,8 @@ void Egg()
 		}
 	}
 	//DrawPoints(tab3, n);
-	DrawTriangles(tab3, n);
+	//DrawTriangles(tab3, n);
+	DrawLines(tab3, n);
 }
 
 
