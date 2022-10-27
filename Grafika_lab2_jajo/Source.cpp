@@ -4,8 +4,9 @@
 #include <cmath>
 #include <iostream>
 #include <ctime>
+#include <conio.h>
 
-#define M_PI 3.14159265358979323846
+#define M_PI 3.14159265358979323846 // LICZBA PI
 typedef float point3[3];
 
 
@@ -47,6 +48,8 @@ void Axes(void)
 }
 
 
+//-------------------------------------------------------------------------------- PUNKTOWE JAJKO JAJKO
+
 void DrawPoints(float*** t, int n)
 {
 	glColor3f(1.0f, 1.0f, 1.0f); // Ustawienie koloru rysowania na biały
@@ -63,34 +66,91 @@ void DrawPoints(float*** t, int n)
 }
 
 
-void DrawTriangles(float*** t, GLint n)
+//-------------------------------------------------------------------------------- LINIOWE JAJKO
+
+void LinesPerNode(float*** t, GLint w, GLint k)
 {
-	for (int w = 1; w < n; w++)
+	//linia pionowa w gore
+	glBegin(GL_LINES);
+
+	glVertex3fv(t[w][k]);
+	glVertex3fv(t[w - 1][k]);
+
+	glEnd();
+
+	//linia pozioma w prawo
+	glBegin(GL_LINES);
+
+	glVertex3fv(t[w][k]);
+	glVertex3fv(t[w][k + 1]);
+
+	glEnd();
+
+	//linia na ukos do prawego gornego wierzcholka
+	glBegin(GL_LINES);
+
+	glVertex3fv(t[w][k]);
+	glVertex3fv(t[w - 1][k + 1]);
+
+	glEnd();
+}
+
+
+void LinesLastColumn(float*** t, GLint w, GLint n)
+{
+	//linia pionowa w gore
+	glBegin(GL_LINES);
+
+	glVertex3fv(t[w][n - 1]);
+	glVertex3fv(t[w - 1][n - 1]);
+
+	glEnd();
+
+	//linia pozioma w prawo
+	glBegin(GL_LINES);
+
+	glVertex3fv(t[w][n - 1]);
+	glVertex3fv(t[n - w - 1][0]);
+
+	glEnd();
+
+	//linia na ukos do prawego gornego wierzcholka
+	glBegin(GL_LINES);
+
+	glVertex3fv(t[w][n - 1]);
+	glVertex3fv(t[n - w][0]);
+
+	glEnd();
+}
+
+
+void LinesLastRow(float*** t, GLint n)
+{
+	for (int k = 0; k < n - 1; k++)
 	{
-		for (int k = 0; k < n - 1; k++)
-		{
-			glBegin(GL_TRIANGLES);
+		//linia pionowa w gore
+		glBegin(GL_LINES);
 
-			glColor3f(((rand() % 100) * 0.01), ((rand() % 100) * 0.01), ((rand() % 100) * 0.01));
-			glVertex3fv(t[w][k]);
-			glColor3f(((rand() % 100) * 0.01), ((rand() % 100) * 0.01), ((rand() % 100) * 0.01));
-			glVertex3fv(t[w - 1][k]);
-			glColor3f(((rand() % 100) * 0.01), ((rand() % 100) * 0.01), ((rand() % 100) * 0.01));
-			glVertex3fv(t[w - 1][k + 1]);
+		glVertex3fv(t[0][k]);
+		glVertex3fv(t[n - 1][k]);
 
-			glEnd();
+		glEnd();
 
-			glBegin(GL_TRIANGLES);
+		//linia pozioma w prawo
+		glBegin(GL_LINES);
 
-			glColor3f(((rand() % 100) * 0.01), ((rand() % 100) * 0.01), ((rand() % 100) * 0.01));
-			glVertex3fv(t[w][k]);
-			glColor3f(((rand() % 100) * 0.01), ((rand() % 100) * 0.01), ((rand() % 100) * 0.01));
-			glVertex3fv(t[w][k + 1]);
-			glColor3f(((rand() % 100) * 0.01), ((rand() % 100) * 0.01), ((rand() % 100) * 0.01));
-			glVertex3fv(t[w - 1][k + 1]);
+		glVertex3fv(t[0][k]);
+		glVertex3fv(t[0][k + 1]);
 
-			glEnd();
-		}
+		glEnd();
+
+		//linia na ukos do prawego gornego wierzcholka
+		glBegin(GL_LINES);
+
+		glVertex3fv(t[0][k]);
+		glVertex3fv(t[n - 1][k + 1]);
+
+		glEnd();
 	}
 }
 
@@ -103,93 +163,206 @@ void DrawLines(float*** t, GLint n)
 	{
 		for (int k = 0; k < n - 1; k++)
 		{
-			//linia pionowa w gore
-			glBegin(GL_LINES);
-						
-				glVertex3fv(t[w][k]);
-				glVertex3fv(t[w - 1][k]);
-			
-			glEnd();
-
-			//linia pozioma w prawo
-			glBegin(GL_LINES);
-
-				glVertex3fv(t[w][k]);
-				glVertex3fv(t[w][k+1]);
-
-			glEnd();
-
-			//linia na ukos do prawego gornego wierzcholka
-			glBegin(GL_LINES);
-
-				glVertex3fv(t[w][k]);
-				glVertex3fv(t[w - 1][k+1]);
-
-			glEnd();
-
+			LinesPerNode(t, w, k);
 		}
+		LinesLastColumn(t, w, n);
+	}
+	LinesLastRow(t, n);
+}
+
+
+//-------------------------------------------------------------------------------- TRÓJKĄTNE JAJKO
+
+void TrianglesPerNode(float*** t, GLint w, GLint k)
+{
+	glBegin(GL_TRIANGLES);
+
+	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+	glVertex3fv(t[w][k]);
+	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+	glVertex3fv(t[w - 1][k]);
+	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+	glVertex3fv(t[w - 1][k + 1]);
+
+	glEnd();
+
+	glBegin(GL_TRIANGLES);
+
+	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+	glVertex3fv(t[w][k]);
+	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+	glVertex3fv(t[w][k + 1]);
+	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+	glVertex3fv(t[w - 1][k + 1]);
+
+	glEnd();
+}
+
+
+void TrianglesLastColumn(float*** t, GLint w, GLint n)
+{
+	glBegin(GL_TRIANGLES);
+
+	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+	glVertex3fv(t[w][n - 1]);
+	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+	glVertex3fv(t[w - 1][n - 1]);
+	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+	glVertex3fv(t[n - w][0]);
+
+	glEnd();
+
+	glBegin(GL_TRIANGLES);
+
+	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+	glVertex3fv(t[w][n - 1]);
+	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+	glVertex3fv(t[n - w - 1][0]);
+	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+	glVertex3fv(t[n - w][0]);
+
+	glEnd();
+}
+
+
+void TrianglesLastRow(float*** t, GLint n)
+{
+	for (int k = 0; k < n - 1; k++)
+	{
+		glBegin(GL_TRIANGLES);
+
+		glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+		glVertex3fv(t[0][k]);
+		glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+		glVertex3fv(t[n - 1][k]);
+		glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+		glVertex3fv(t[n - 1][k + 1]);
+
+		glEnd();
+
+		glBegin(GL_TRIANGLES);
+
+		glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+		glVertex3fv(t[0][k]);
+		glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+		glVertex3fv(t[0][k + 1]);
+		glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
+		glVertex3fv(t[n - 1][k + 1]);
+
+		glEnd();
 	}
 }
 
 
-void Egg()
+void DrawTriangles(float*** t, GLint n)
 {
-	int n = 20;
-	float*** tab3 = new float** [n];
+	for (int w = 1; w < n; w++)
+	{
+		for (int k = 0; k < n - 1; k++)
+		{
+			TrianglesPerNode(t, w, k);
+		}
+		TrianglesLastColumn(t, w, n);
+	}
+	TrianglesLastRow(t, n);
+}
+
+
+//-------------------------------------------------------------------------------- TABLICA I RYSOWANIE JAJKA
+
+float*** Tab(int n)
+{
+	float*** tab = new float** [n];
 	float u, v;
 	for (int i = 0; i < n; i++)
 	{
-		tab3[i] = new float* [n];
+		tab[i] = new float* [n];
 		for (int j = 0; j < n; j++)
 		{
 			u = (float)i / (float)n;
 			v = (float)j / (float)n;
-			tab3[i][j] = new float[3];
-			tab3[i][j][0] = (-90.0 * pow(u, 5.0) + 225.0 * pow(u, 4.0) - 270.0 * pow(u, 3.0) + 180.0 * pow(u, 2.0) - 45.0 * u) * cos(M_PI * v); // x(u,v)
-			tab3[i][j][1] = 160.0 * pow(u, 4.0) - 320.0 * pow(u, 3.0) + 160.0 * pow(u, 2.0) - 5; // y(u,v)
-			tab3[i][j][2] = (-90.0 * pow(u, 5.0) + 225.0 * pow(u, 4.0) - 270.0 * pow(u, 3.0) + 180.0 * pow(u, 2.0) - 45.0 * u) * sin(M_PI * v); // z(u,v)
+			tab[i][j] = new float[3];
+			tab[i][j][0] = (-90.0 * pow(u, 5.0) + 225.0 * pow(u, 4.0) - 270.0 * pow(u, 3.0) + 180.0 * pow(u, 2.0) - 45.0 * u) * cos(M_PI * v); // x(u,v)
+			tab[i][j][1] = 160.0 * pow(u, 4.0) - 320.0 * pow(u, 3.0) + 160.0 * pow(u, 2.0) - 5;												   // y(u,v)
+			tab[i][j][2] = (-90.0 * pow(u, 5.0) + 225.0 * pow(u, 4.0) - 270.0 * pow(u, 3.0) + 180.0 * pow(u, 2.0) - 45.0 * u) * sin(M_PI * v); // z(u,v)
 		}
 	}
+	return tab;
+}
+
+
+void Egg( )
+{
+	int n = 13;
+	float*** tab3 = Tab(n);
+
 	//DrawPoints(tab3, n);
 	//DrawTriangles(tab3, n);
 	DrawLines(tab3, n);
 }
 
 
+//-------------------------------------------------------------------------------- OBRACANIE JAJKA
+
 void Spin(GLfloat angle)
 {
-	//angle = time_t * 180 / 3.1415;
-	glRotatef(2 * angle, 1.0, 0.0, 0.0);
-	glRotatef(angle, 0.0, 1.0, 0.0);
-	glRotatef(angle, 0.0, 0.0, 1.0);
+	glRotatef(angle * (rand() % 101) * 0.01, 1.0, 0.0, 0.0);
+	glRotatef(angle * (rand() % 101) * 0.01, 0.0, 1.0, 0.0);
+	glRotatef(angle * (rand() % 101) * 0.01, 0.0, 0.0, 1.0);
 }
 
 
+//-------------------------------------------------------------------------------- CZYTANIE ZNAKU Z KLAWIATURY
+
+int ReadSign()
+{
+	unsigned char znak;
+	znak = getchar();
+	return static_cast <int>(znak);
+}
+
+
+void Write()
+{
+	std::cout << "Jak chcesz wypelnic jajko? " << std::endl;
+	std::cout << " - punktowo	(1)" << std::endl;
+	std::cout << " - liniowo	(2)" << std::endl;
+	std::cout << " - trojkatami	(3)" << std::endl;
+}
+
+
+//-------------------------------------------------------------------------------- RESZTA
+
 void RenderScene(void)
 {
+	Write();
+	unsigned char sign = ReadSign();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	// Czyszczenie okna aktualnym kolorem czyszczącym
+	while (true)
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// Czyszczenie okna aktualnym kolorem czyszczącym
 
-	glLoadIdentity();
-	// Czyszczenie macierzy bieżącej
-	Axes();
-	// Narysowanie osi przy pomocy funkcji zdefiniowanej wyżej
+		//glLoadIdentity();
+		//// Czyszczenie macierzy bieżącej
+		//Axes();
+		// Narysowanie osi przy pomocy funkcji zdefiniowanej wyżej
 
-	//glColor3f(1.0f, 1.0f, 1.0f); // Ustawienie koloru rysowania na biały
-	//glRotated(60.0, 1.0, 1.0, 1.0);  // Obrót o 60 stopni
-	//glutWireTeapot(3.0); // Narysowanie obrazu czajnika do herbaty
+		//glColor3f(1.0f, 1.0f, 1.0f); // Ustawienie koloru rysowania na biały
+		//glRotated(60.0, 1.0, 1.0, 1.0);  // Obrót o 60 stopni
+		//glutWireTeapot(3.0); // Narysowanie obrazu czajnika do herbaty
 
-	Spin(10);
+		//Spin(10);
+		//sekundy = time(NULL);
+		Spin(0.3);
 
-	Egg();
+		Egg();
 
-	glFlush();
-	// Przekazanie poleceń rysujących do wykonania
+		glFlush();
+		// Przekazanie poleceń rysujących do wykonania
 
-
-	glutSwapBuffers();
-	//
+		glutSwapBuffers();
+	}
 }
 
 
@@ -241,12 +414,11 @@ void ChangeSize(GLsizei horizontal, GLsizei vertical)
 
 void main(void)
 {
-
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
 	glutInitWindowSize(300, 300);
 
-	glutCreateWindow("Układ współrzędnych 3-D");
+	glutCreateWindow("JAJOOO");
 
 	glutDisplayFunc(RenderScene);
 	// Określenie, że funkcja RenderScene będzie funkcją zwrotną
