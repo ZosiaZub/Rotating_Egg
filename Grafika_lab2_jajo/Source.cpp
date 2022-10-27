@@ -291,11 +291,11 @@ float*** Tab(int n)
 }
 
 
-void Egg( )
+void Egg(int n)
 {
-	int n = 13;
 	float*** tab3 = Tab(n);
 
+	
 	//DrawPoints(tab3, n);
 	//DrawTriangles(tab3, n);
 	DrawLines(tab3, n);
@@ -336,7 +336,16 @@ void Write()
 void RenderScene(void)
 {
 	Write();
-	unsigned char sign = ReadSign();
+	int sign = ReadSign();
+
+	int n;
+	std::cout << "Podaj liczbe n (wierzcholkow bedzie n^2)" << std::endl;
+	std::cin >> n;
+
+	float p;
+	std::cout << "Podaj predkosc obrotu (float) <0-2>" << std::endl;
+	std::cin >> p;
+	
 
 	while (true)
 	{
@@ -352,11 +361,9 @@ void RenderScene(void)
 		//glRotated(60.0, 1.0, 1.0, 1.0);  // Obrót o 60 stopni
 		//glutWireTeapot(3.0); // Narysowanie obrazu czajnika do herbaty
 
-		//Spin(10);
-		//sekundy = time(NULL);
-		Spin(0.3);
+		Spin(p);
 
-		Egg();
+		Egg(n);
 
 		glFlush();
 		// Przekazanie poleceń rysujących do wykonania
@@ -377,6 +384,7 @@ void MyInit(void)
 
 void ChangeSize(GLsizei horizontal, GLsizei vertical)
 {
+	float size = 7.5;
 
 	GLfloat AspectRatio;
 	// Deklaracja zmiennej AspectRatio  określającej proporcję
@@ -400,10 +408,10 @@ void ChangeSize(GLsizei horizontal, GLsizei vertical)
 	// glOrtho(...)
 	if (horizontal <= vertical)
 
-		glOrtho(-7.5, 7.5, -7.5 / AspectRatio, 7.5 / AspectRatio, 10.0, -10.0);
+		glOrtho(-size, size, -size / AspectRatio, size / AspectRatio, 10.0, -10.0);
 	else
 
-		glOrtho(-7.5 * AspectRatio, 7.5 * AspectRatio, -7.5, 7.5, 10.0, -10.0);
+		glOrtho(-size * AspectRatio, size * AspectRatio, -size, size, 10.0, -10.0);
 	glMatrixMode(GL_MODELVIEW);
 	// Przełączenie macierzy bieżącej na macierz widoku modelu
 
@@ -416,7 +424,7 @@ void main(void)
 {
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
-	glutInitWindowSize(300, 300);
+	glutInitWindowSize(700, 700);
 
 	glutCreateWindow("JAJOOO");
 
