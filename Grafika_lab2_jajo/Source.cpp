@@ -435,10 +435,8 @@ void ChangeSize(GLsizei horizontal, GLsizei vertical)
 }
 
 
-void main(int argc, char** argv)
+void main(void)
 {
-	glutInit(&argc, argv);
-
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
 	glutInitWindowSize(700, 700);
