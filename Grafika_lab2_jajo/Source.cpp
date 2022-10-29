@@ -358,9 +358,9 @@ void RenderScene(void)
 	float p;
 	std::cout << "Podaj predkosc obrotu (float) <0-2>" << std::endl;
 	std::cin >> p;
-	
 
-	do
+
+	while (true)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Czyszczenie okna aktualnym kolorem czyszczącym
@@ -382,7 +382,8 @@ void RenderScene(void)
 		// Przekazanie poleceń rysujących do wykonania
 
 		glutSwapBuffers();
-	} while (true);
+
+	}
 }
 
 
