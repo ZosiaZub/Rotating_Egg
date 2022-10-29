@@ -8,6 +8,9 @@
 
 #define M_PI 3.14159265358979323846 // LICZBA PI
 typedef float point3[3];
+int model = 1;
+int n;
+float p;
 
 
 void Axes(void)
@@ -291,21 +294,21 @@ float*** Tab(int n)
 }
 
 
-void Egg(int n, int choice)
+void Egg(int n)
 {
 	float*** tab3 = Tab(n);
 
-	switch (choice)
+	switch (model)
 	{
-	case 49:
+	case 1:
 		DrawPoints(tab3, n);
 		break;
 
-	case 50:
+	case 2:
 		DrawLines(tab3, n);
 		break;
 
-	case 51:
+	case 3:
 		DrawTriangles(tab3, n);
 		break;
 
@@ -338,9 +341,9 @@ int ReadSign()
 void Write()
 {
 	std::cout << "Jak chcesz wypelnic jajko? " << std::endl;
-	std::cout << " - punktowo	(1)" << std::endl;
-	std::cout << " - liniowo	(2)" << std::endl;
-	std::cout << " - trojkatami	(3)" << std::endl;
+	std::cout << " - punkty		(p)" << std::endl;
+	std::cout << " - siatka		(s)" << std::endl;
+	std::cout << " - trojkatami		(t)" << std::endl;
 }
 
 
@@ -348,20 +351,8 @@ void Write()
 
 void RenderScene(void)
 {
-	Write();
-	int sign = ReadSign();
-
-	int n;
-	std::cout << "Podaj liczbe n (wierzcholkow bedzie n^2)" << std::endl;
-	std::cin >> n;
-
-	float p;
-	std::cout << "Podaj predkosc obrotu (float) <0-2>" << std::endl;
-	std::cin >> p;
-
-
-	while (true)
-	{
+	//while (true)
+	//{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Czyszczenie okna aktualnym kolorem czyszczącym
 
@@ -376,14 +367,24 @@ void RenderScene(void)
 
 		Spin(p);
 
-		Egg(n, sign);
+		Egg(n);
 
 		glFlush();
 		// Przekazanie poleceń rysujących do wykonania
 
 		glutSwapBuffers();
 
-	}
+	//}
+}
+
+
+void Keys(unsigned char key, int x, int y)
+{
+	if (key == 'p') model = 1;
+	if (key == 's') model = 2;
+	if (key == 't') model = 3;
+
+	RenderScene(); // przerysowanie obrazu sceny
 }
 
 
@@ -434,18 +435,34 @@ void ChangeSize(GLsizei horizontal, GLsizei vertical)
 }
 
 
-void main(void)
+void main(int argc, char** argv)
 {
+	glutInit(&argc, argv);
+
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
 	glutInitWindowSize(700, 700);
 
 	glutCreateWindow("JAJOOO");
 
+	/*Write();
+	model = ReadSign();*/
+
+	std::cout << "Podaj liczbe n (wierzcholkow bedzie n^2)" << std::endl;
+	std::cin >> n;
+
+	std::cout << "Podaj predkosc obrotu (float) <0-2>" << std::endl;
+	std::cin >> p;
+
+	
+
 	glutDisplayFunc(RenderScene);
 	// Określenie, że funkcja RenderScene będzie funkcją zwrotną
 	// (callback function).  Bedzie ona wywoływana za każdym razem
 	// gdy zajdzie potrzba przeryswania okna
+
+	glutKeyboardFunc(Keys);
+
 	glutReshapeFunc(ChangeSize);
 	// Dla aktualnego okna ustala funkcję zwrotną odpowiedzialną
 	// zazmiany rozmiaru okna
