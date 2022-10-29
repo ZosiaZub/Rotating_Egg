@@ -291,14 +291,27 @@ float*** Tab(int n)
 }
 
 
-void Egg(int n)
+void Egg(int n, int choice)
 {
 	float*** tab3 = Tab(n);
 
-	
-	//DrawPoints(tab3, n);
-	//DrawTriangles(tab3, n);
-	DrawLines(tab3, n);
+	switch (choice)
+	{
+	case 49:
+		DrawPoints(tab3, n);
+		break;
+
+	case 50:
+		DrawLines(tab3, n);
+		break;
+
+	case 51:
+		DrawTriangles(tab3, n);
+		break;
+
+	default:
+		std::cout << "do wyboru wypełnienia powierzchni jajka sa tylko opcje 1, 2 lub 3" << std::endl;
+	}
 }
 
 
@@ -347,7 +360,7 @@ void RenderScene(void)
 	std::cin >> p;
 	
 
-	while (true)
+	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Czyszczenie okna aktualnym kolorem czyszczącym
@@ -363,13 +376,13 @@ void RenderScene(void)
 
 		Spin(p);
 
-		Egg(n);
+		Egg(n, sign);
 
 		glFlush();
 		// Przekazanie poleceń rysujących do wykonania
 
 		glutSwapBuffers();
-	}
+	} while (true);
 }
 
 
