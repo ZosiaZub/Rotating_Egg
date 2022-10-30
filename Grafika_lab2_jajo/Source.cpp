@@ -51,6 +51,51 @@ void Axes(void)
 }
 
 
+//-------------------------------------------------------------------------------- TABLICA PUNKTÓW, TABLICA KOLORÓW
+
+float*** NodesTab(int n)
+{
+	float*** tab = new float** [n];
+	float u, v;
+	for (int i = 0; i < n; i++)
+	{
+		tab[i] = new float* [n];
+		for (int j = 0; j < n; j++)
+		{
+			u = (float)i / (float)n;
+			v = (float)j / (float)n;
+			tab[i][j] = new float[3];
+			tab[i][j][0] = (-90.0 * pow(u, 5.0) + 225.0 * pow(u, 4.0) - 270.0 * pow(u, 3.0) + 180.0 * pow(u, 2.0) - 45.0 * u) * cos(M_PI * v); // x(u,v)
+			tab[i][j][1] = 160.0 * pow(u, 4.0) - 320.0 * pow(u, 3.0) + 160.0 * pow(u, 2.0) - 5;												   // y(u,v)
+			tab[i][j][2] = (-90.0 * pow(u, 5.0) + 225.0 * pow(u, 4.0) - 270.0 * pow(u, 3.0) + 180.0 * pow(u, 2.0) - 45.0 * u) * sin(M_PI * v); // z(u,v)
+		}
+	}
+	return tab;
+}
+
+
+float*** ColorsTab(int n)
+{
+	float*** tab = new float** [n];
+	float u, v;
+	for (int i = 0; i < n; i++)
+	{
+		tab[i] = new float* [n];
+		for (int j = 0; j < n; j++)
+		{
+			u = (float)i / (float)n;
+			v = (float)j / (float)n;
+			tab[i][j] = new float[3];
+
+			for (int c = 0; c < 3; c++)
+				tab[i][j][c] = (rand() % 101) * 0.01; // RGB
+
+		}
+	}
+	return tab;
+}
+
+
 //-------------------------------------------------------------------------------- PUNKTOWE JAJKO JAJKO
 
 void DrawPoints(float*** t, int n)
@@ -176,140 +221,121 @@ void DrawLines(float*** t, GLint n)
 
 //-------------------------------------------------------------------------------- TRÓJKĄTNE JAJKO
 
-void TrianglesPerNode(float*** t, GLint w, GLint k)
+void TrianglesPerNode(float*** pt, float*** ct, GLint w, GLint k)
 {
 	glBegin(GL_TRIANGLES);
 
-	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-	glVertex3fv(t[w][k]);
-	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-	glVertex3fv(t[w - 1][k]);
-	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-	glVertex3fv(t[w - 1][k + 1]);
+	glColor3f(ct[w][k][0], ct[w][k][1], ct[w][k][2]);
+	glVertex3fv(pt[w][k]);
+	glColor3f(ct[w - 1][k][0], ct[w - 1][k][1], ct[w - 1][k][2]);
+	glVertex3fv(pt[w - 1][k]);
+	glColor3f(ct[w - 1][k + 1][0], ct[w - 1][k + 1][1], ct[w - 1][k + 1][2]);
+	glVertex3fv(pt[w - 1][k + 1]);
 
 	glEnd();
 
 	glBegin(GL_TRIANGLES);
 
-	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-	glVertex3fv(t[w][k]);
-	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-	glVertex3fv(t[w][k + 1]);
-	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-	glVertex3fv(t[w - 1][k + 1]);
+	glColor3f(ct[w][k][0], ct[w][k][1], ct[w][k][2]);
+	glVertex3fv(pt[w][k]);
+	glColor3f(ct[w][k + 1][0], ct[w][k + 1][1], ct[w][k + 1][2]);
+	glVertex3fv(pt[w][k + 1]);
+	glColor3f(ct[w - 1][k + 1][0], ct[w - 1][k + 1][1], ct[w - 1][k + 1][2]);
+	glVertex3fv(pt[w - 1][k + 1]);
 
 	glEnd();
 }
 
 
-void TrianglesLastColumn(float*** t, GLint w, GLint n)
+void TrianglesLastColumn(float*** pt, float*** ct, GLint w, GLint n)
 {
 	glBegin(GL_TRIANGLES);
 
-	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-	glVertex3fv(t[w][n - 1]);
-	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-	glVertex3fv(t[w - 1][n - 1]);
-	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-	glVertex3fv(t[n - w][0]);
+	glColor3f(ct[w][n - 1][0], ct[w][n - 1][1], ct[w][n - 1][2]);
+	glVertex3fv(pt[w][n - 1]);
+	glColor3f(ct[w - 1][n - 1][0], ct[w - 1][n - 1][1], ct[w - 1][n - 1][2]);
+	glVertex3fv(pt[w - 1][n - 1]);
+	glColor3f(ct[n - w][0][0], ct[n - w][0][1], ct[n - w][0][2]);
+	glVertex3fv(pt[n - w][0]);
 
 	glEnd();
 
+
 	glBegin(GL_TRIANGLES);
 
-	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-	glVertex3fv(t[w][n - 1]);
-	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-	glVertex3fv(t[n - w - 1][0]);
-	glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-	glVertex3fv(t[n - w][0]);
+	glColor3f(ct[w][n - 1][0], ct[w][n - 1][1], ct[w][n - 1][2]);
+	glVertex3fv(pt[w][n - 1]);
+	glColor3f(ct[n - w - 1][0][0], ct[n - w - 1][0][1], ct[n - w - 1][0][2]);
+	glVertex3fv(pt[n - w - 1][0]);
+	glColor3f(ct[n - w][0][0], ct[n - w][0][1], ct[n - w][0][2]);
+	glVertex3fv(pt[n - w][0]);
 
 	glEnd();
 }
 
 
-void TrianglesLastRow(float*** t, GLint n)
+void TrianglesLastRow(float*** pt, float*** ct, GLint n)
 {
 	for (int k = 0; k < n - 1; k++)
 	{
 		glBegin(GL_TRIANGLES);
 
-		glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-		glVertex3fv(t[0][k]);
-		glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-		glVertex3fv(t[n - 1][k]);
-		glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-		glVertex3fv(t[n - 1][k + 1]);
+		glColor3f(ct[0][k][0], ct[0][k][1], ct[0][k][2]);
+		glVertex3fv(pt[0][k]);
+		glColor3f(ct[n - 1][k][0], ct[n - 1][k][1], ct[n - 1][k][2]);
+		glVertex3fv(pt[n - 1][k]);
+		glColor3f(ct[n - 1][k + 1][0], ct[n - 1][k + 1][1], ct[n - 1][k + 1][2]);
+		glVertex3fv(pt[n - 1][k + 1]);
 
 		glEnd();
 
 		glBegin(GL_TRIANGLES);
 
-		glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-		glVertex3fv(t[0][k]);
-		glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-		glVertex3fv(t[0][k + 1]);
-		glColor3f(((rand() % 101) * 0.01), ((rand() % 101) * 0.01), ((rand() % 101) * 0.01));
-		glVertex3fv(t[n - 1][k + 1]);
+		glColor3f(ct[0][k][0], ct[0][k][1], ct[0][k][2]);
+		glVertex3fv(pt[0][k]);
+		glColor3f(ct[0][k + 1][0], ct[0][k + 1][1], ct[0][k + 1][2]);
+		glVertex3fv(pt[0][k + 1]);
+		glColor3f(ct[n - 1][k + 1][0], ct[n - 1][k + 1][1], ct[n - 1][k + 1][2]);
+		glVertex3fv(pt[n - 1][k + 1]);
 
 		glEnd();
 	}
 }
 
 
-void DrawTriangles(float*** t, GLint n)
+void DrawTriangles(float*** pt, float*** ct, GLint n)
 {
 	for (int w = 1; w < n; w++)
 	{
 		for (int k = 0; k < n - 1; k++)
 		{
-			TrianglesPerNode(t, w, k);
+			TrianglesPerNode(pt, ct, w, k);
 		}
-		TrianglesLastColumn(t, w, n);
+		TrianglesLastColumn(pt, ct, w, n);
 	}
-	TrianglesLastRow(t, n);
+	TrianglesLastRow(pt, ct, n);
 }
 
 
-//-------------------------------------------------------------------------------- TABLICA I RYSOWANIE JAJKA
-
-float*** Tab(int n)
-{
-	float*** tab = new float** [n];
-	float u, v;
-	for (int i = 0; i < n; i++)
-	{
-		tab[i] = new float* [n];
-		for (int j = 0; j < n; j++)
-		{
-			u = (float)i / (float)n;
-			v = (float)j / (float)n;
-			tab[i][j] = new float[3];
-			tab[i][j][0] = (-90.0 * pow(u, 5.0) + 225.0 * pow(u, 4.0) - 270.0 * pow(u, 3.0) + 180.0 * pow(u, 2.0) - 45.0 * u) * cos(M_PI * v); // x(u,v)
-			tab[i][j][1] = 160.0 * pow(u, 4.0) - 320.0 * pow(u, 3.0) + 160.0 * pow(u, 2.0) - 5;												   // y(u,v)
-			tab[i][j][2] = (-90.0 * pow(u, 5.0) + 225.0 * pow(u, 4.0) - 270.0 * pow(u, 3.0) + 180.0 * pow(u, 2.0) - 45.0 * u) * sin(M_PI * v); // z(u,v)
-		}
-	}
-	return tab;
-}
-
+//-------------------------------------------------------------------------------- RYSOWANIE JAJKA
 
 void Egg(int n)
 {
-	float*** tab3 = Tab(n);
+	float*** nodesTab = NodesTab(n);
+	float*** colorsTab = ColorsTab(n);
 
 	switch (model)
 	{
 	case 1:
-		DrawPoints(tab3, n);
+		DrawPoints(nodesTab, n);
 		break;
 
 	case 2:
-		DrawLines(tab3, n);
+		DrawLines(nodesTab, n);
 		break;
 
 	case 3:
-		DrawTriangles(tab3, n);
+		DrawTriangles(nodesTab, colorsTab, n);
 		break;
 
 	default:
@@ -450,7 +476,7 @@ void main(void)
 	std::cout << "Podaj predkosc obrotu (float) <0-0.6>" << std::endl;
 	std::cin >> p;
 
-	
+
 
 	glutDisplayFunc(RenderScene);
 	// Określenie, że funkcja RenderScene będzie funkcją zwrotną
