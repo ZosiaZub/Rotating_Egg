@@ -325,6 +325,8 @@ void Spin(GLfloat angle)
 	glRotatef(angle * (rand() % 101) * 0.01, 1.0, 0.0, 0.0);
 	glRotatef(angle * (rand() % 101) * 0.01, 0.0, 1.0, 0.0);
 	glRotatef(angle * (rand() % 101) * 0.01, 0.0, 0.0, 1.0);
+
+	glutPostRedisplay();
 }
 
 
@@ -351,30 +353,26 @@ void Write()
 
 void RenderScene(void)
 {
-	//while (true)
-	//{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// Czyszczenie okna aktualnym kolorem czyszczącym
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// Czyszczenie okna aktualnym kolorem czyszczącym
 
-		//glLoadIdentity();
-		//// Czyszczenie macierzy bieżącej
-		//Axes();
-		// Narysowanie osi przy pomocy funkcji zdefiniowanej wyżej
+	//glLoadIdentity();
+	//// Czyszczenie macierzy bieżącej
+	//Axes();
+	// Narysowanie osi przy pomocy funkcji zdefiniowanej wyżej
 
-		//glColor3f(1.0f, 1.0f, 1.0f); // Ustawienie koloru rysowania na biały
-		//glRotated(60.0, 1.0, 1.0, 1.0);  // Obrót o 60 stopni
-		//glutWireTeapot(3.0); // Narysowanie obrazu czajnika do herbaty
+	//glColor3f(1.0f, 1.0f, 1.0f); // Ustawienie koloru rysowania na biały
+	//glRotated(60.0, 1.0, 1.0, 1.0);  // Obrót o 60 stopni
+	//glutWireTeapot(3.0); // Narysowanie obrazu czajnika do herbaty
 
-		Spin(p);
+	Spin(p);
 
-		Egg(n);
+	Egg(n);
 
-		glFlush();
-		// Przekazanie poleceń rysujących do wykonania
+	glFlush();
+	// Przekazanie poleceń rysujących do wykonania
 
-		glutSwapBuffers();
-
-	//}
+	glutSwapBuffers();
 }
 
 
@@ -449,7 +447,7 @@ void main(void)
 	std::cout << "Podaj liczbe n (wierzcholkow bedzie n^2)" << std::endl;
 	std::cin >> n;
 
-	std::cout << "Podaj predkosc obrotu (float) <0-2>" << std::endl;
+	std::cout << "Podaj predkosc obrotu (float) <0-0.6>" << std::endl;
 	std::cin >> p;
 
 	
